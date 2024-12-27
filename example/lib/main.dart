@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Location Picker',
       debugShowCheckedModeBanner: false,
+      darkTheme: ThemeData.dark(),
       home: Scaffold(
         body: Center(
           child: Builder(builder: (context) {
@@ -27,7 +28,7 @@ class _MyAppState extends State<MyApp> {
                 LocationData? locationData = await LocationSearch.show(
                   context: context,
                   lightAddress: true,
-                  mode: Mode.overlay,
+                  mode: Mode.bottomSheet,
                 );
 
                 if (locationData == null) return;

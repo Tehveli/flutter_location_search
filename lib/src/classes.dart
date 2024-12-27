@@ -46,7 +46,7 @@ class LatLong {
   LatLong(this.latitude, this.longitude);
 }
 
-enum Mode { overlay, fullscreen }
+enum Mode { overlay, fullscreen, bottomSheet }
 
 class HistoryManager {
   static const _historyKey = 'HISTORY';

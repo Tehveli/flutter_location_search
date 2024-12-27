@@ -35,35 +35,15 @@ class LocationSearchWidget extends StatefulWidget {
   ///
   final Widget? loadingWidget;
 
-  /// [searchBarBackgroundColor] : (Color) change the background color of the search bar
-  ///
-
-  final Color? searchBarBackgroundColor;
-
-  /// [searchBarTextColor] : (Color) change the color of the search bar text
-  ///
-
-  final Color searchBarTextColor;
-
   /// [searchBarHintText] : (String) change the hint text of the search bar
   ///
 
   final String searchBarHintText;
 
-  /// [searchBarHintColor] : (Color) change the color of the search bar hint text
-  ///
-
-  final Color searchBarHintColor;
-
   /// [lightAddress] : (bool) if true, displayed and returned adresses will be lighter
   ///
 
   final bool lightAddress;
-
-  /// [iconColor] : (Color) change the color of the search bar text
-  ///
-
-  final Color iconColor;
 
   /// [currentPositionButtonText] : (String) change the text of the button selecting current position
   ///
@@ -86,13 +66,9 @@ class LocationSearchWidget extends StatefulWidget {
     this.onError,
     this.language = 'en',
     this.countryCodes,
-    this.searchBarBackgroundColor,
-    this.searchBarTextColor = Colors.black87,
     this.searchBarHintText = 'Search location',
     this.currentPositionButtonText = 'Use current location',
-    this.searchBarHintColor = Colors.black87,
     this.lightAddress = false,
-    this.iconColor = Colors.grey,
     this.mode = Mode.fullscreen,
     this.historyMaxLength = 5,
     Widget? loadingWidget,
@@ -112,7 +88,6 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
   List<LocationData> _options = <LocationData>[];
   bool isLoading = false;
   late void Function(Exception e) onError;
-  final _defaultSearchBarColor = Colors.grey[300];
 
   final List<LocationData> _history = [];
   final _historyManager = HistoryManager();
@@ -313,28 +288,22 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
 
         return ListTile(
           leading: isHistory
-              ? Icon(
+              ? const Icon(
                   Icons.watch_later_outlined,
-                  color: widget.iconColor,
                 )
               : null,
-          trailing: Icon(
+          trailing: const Icon(
             Icons.chevron_right,
-            color: widget.iconColor,
             size: 30,
           ),
           title: Text(
             item.address,
-            style: TextStyle(
-              color: widget.searchBarTextColor,
-            ),
+            style: const TextStyle(),
           ),
           onTap: () => _onResultTap(item),
         );
       },
-      separatorBuilder: (context, index) => Divider(
-        color: _defaultSearchBarColor,
-      ),
+      separatorBuilder: (context, index) => const Divider(),
     );
   }
 
@@ -360,14 +329,11 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
             textDirection: isRTL(_searchController.text)
                 ? TextDirection.rtl
                 : TextDirection.ltr,
-            style: TextStyle(color: widget.searchBarTextColor),
             controller: _searchController,
             focusNode: _focusNode,
             decoration: InputDecoration(
               filled: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              fillColor:
-                  widget.searchBarBackgroundColor ?? _defaultSearchBarColor,
               hintText: widget.searchBarHintText,
               hintTextDirection: isRTL(widget.searchBarHintText)
                   ? TextDirection.rtl
@@ -376,12 +342,10 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
               ),
-              hintStyle: TextStyle(color: widget.searchBarHintColor),
               suffixIcon: IconButton(
                 onPressed: _searchController.clear,
-                icon: Icon(
+                icon: const Icon(
                   Icons.clear,
-                  color: widget.iconColor,
                 ),
               ),
             ),
@@ -413,8 +377,6 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
   }
 
   Future<List<LocationData>> _onSearch(String value) async {
-    final url =
-        "https://nominatim.openstreetmap.org/search?q=$value&format=json&polygon_geojson=1&addressdetails=1&accept-language=${widget.language}${widget.countryCodes == null ? '' : '&countrycodes=${widget.countryCodes}'}";
     final uri = Uri.https(
       'nominatim.openstreetmap.org',
       '/search',
@@ -442,8 +404,8 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 5),
       margin: const EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: _defaultSearchBarColor!)),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide()),
       ),
       child: ListTile(
         onTap: () async {
@@ -451,14 +413,12 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
           unawaited(_addToHistory(currentPos));
           widget.onPicked!(currentPos);
         },
-        leading: Icon(
+        leading: const Icon(
           Icons.location_searching,
-          color: widget.iconColor,
         ),
         title: Text(
           widget.currentPositionButtonText,
-          style: TextStyle(
-            color: widget.searchBarTextColor,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
             overflow: TextOverflow.ellipsis,
@@ -466,17 +426,15 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
           maxLines: 1,
         ),
         trailing: _isCurrentLocationLoading
-            ? SizedBox(
+            ? const SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
-                  color: widget.iconColor,
                   strokeWidth: 3,
                 ),
               )
-            : Icon(
+            : const Icon(
                 Icons.chevron_right,
-                color: widget.iconColor,
                 size: 30,
               ),
       ),
@@ -487,22 +445,26 @@ class _LocationSearchWidgetState extends State<LocationSearchWidget> {
   ///
   Widget _buildDialog() {
     return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-      ),
-      // content: const Text("Save successfully"),
-      child: SizedBox(
-        // height: MediaQuery.of(context).size.height - 300,
-        child:
-            isLoading ? Center(child: widget.loadingWidget) : _buildSearchBar(),
-      ),
-    );
+        clipBehavior: Clip.hardEdge,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        child: ClipRRect(clipBehavior: Clip.hardEdge, child: _buildScaffold()));
   }
 
   /// this is used if mode = Mode.fullscreen
   ///
   Widget _buildScaffold() {
     return Scaffold(
+      appBar: widget.mode != Mode.bottomSheet
+          ? AppBar(
+              leading: CloseButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            )
+          : null,
       body: SafeArea(
         child:
             isLoading ? Center(child: widget.loadingWidget) : _buildSearchBar(),
@@ -523,12 +485,9 @@ class LocationSearch {
     String language = 'en',
     List<String>? countryCodes,
     Color? searchBarBackgroundColor,
-    Color searchBarTextColor = Colors.black87,
     String searchBarHintText = 'Search location',
     String currentPositionButtonText = 'Use current location',
-    Color searchBarHintColor = Colors.black87,
     bool lightAddress = false,
-    Color iconColor = Colors.grey,
     Widget? loadingWidget,
     Mode mode = Mode.fullscreen,
     int historyMaxLength = 5,
@@ -538,13 +497,9 @@ class LocationSearch {
           onError: onError,
           language: language,
           countryCodes: countryCodes,
-          searchBarBackgroundColor: searchBarBackgroundColor,
-          searchBarTextColor: searchBarTextColor,
           searchBarHintText: searchBarHintText,
           currentPositionButtonText: currentPositionButtonText,
-          searchBarHintColor: searchBarHintColor,
           lightAddress: lightAddress,
-          iconColor: iconColor,
           loadingWidget: loadingWidget,
           mode: mode,
           historyMaxLength: historyMaxLength,
@@ -552,6 +507,13 @@ class LocationSearch {
 
     if (mode == Mode.overlay) {
       return showDialog(context: context, builder: builder);
+    } else if (mode == Mode.bottomSheet) {
+      return showModalBottomSheet(
+          isScrollControlled: true,
+          showDragHandle: true,
+          useSafeArea: true,
+          context: context,
+          builder: builder);
     }
     return Navigator.push(context, MaterialPageRoute(builder: builder));
   }
